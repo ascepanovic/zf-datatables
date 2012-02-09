@@ -23,7 +23,7 @@ public/js/datatables-editable - `jQuery-datatables-editable <http://code.google.
 
 public/js/jeditable - `Jeditable <http://www.appelsiini.net/projects/jeditable>`_. Licensed under the `MIT`_ license.
 
-public/js/jvalidate - `jQuery validation <http://bassistance.de/jquery-plugins/jquery-plugin-validation/>`. Dual licensed under the `MIT`_ and `GPL <http://www.opensource.org/licenses/gpl-license.php>`_ licenses.
+public/js/jvalidate - `jQuery validation`_. Dual licensed under the `MIT`_ and `GPL <http://www.opensource.org/licenses/gpl-license.php>`_ licenses.
 
 public/js/maskedinput - `jQuery Masked Input <http://digitalbush.com/projects/masked-input-plugin/>`_. Licensed under the `MIT`_ license.
 
@@ -49,3 +49,4 @@ ZF-Datatables URLs
 .. _MIT: http://www.opensource.org/licenses/mit-license.php
 .. _MITmaskedinput: http://digitalbush.com/projects/masked-input-plugi/#license
 .. _BSD: http://www.opensource.org/licenses/bsd-license.php
+.. _jQuery validation: http://bassistance.de/jquery-plugins/jquery-plugin-validation
