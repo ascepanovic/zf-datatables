@@ -1,0 +1,44 @@
+{
+<?php if ($this->datatableOptions['bServerSide'] == "true") : ?>
+	"sEcho": <?= $this->sEcho ?>,
+	"iTotalRecords": <?= $this->iTotalRecords ?>,
+	"iTotalDisplayRecords": <?= $this->iTotalDisplayRecords ?>,
+<? endif?>
+"aaData": [<?php
+$i = 0;
+while ($row = $this->stmt->fetch()) {
+    $out = array();
+
+    /**
+     * Check to see if any of the columns have a link template.
+     */
+    $z=0;
+    foreach ($this->datatableOptions['columns'] as $key=>$column) {
+        if (isset($column['link']) && $column['link']['template'] != "" && isset($column['link']['id'])) {
+            // find the index # of the column we need for this link
+            foreach ($this->datatableOptions['columns'] as $key2=>$column2) {
+                if ($column2['data']['read']['column'] == $column['link']['id']) {
+                    $columnNumber = $key2;
+                    break;
+                }
+            }
+
+            $out[$z] = $this->DatatablesLink($column['link']['template'],$row[$columnNumber]);
+        } else {
+            $out[$z] = $row[$key];
+        }
+
+        $z++;
+    }
+
+    // convert null's into '' or else TableTools will display null's
+	echo json_encode(str_replace(null,'',$out));
+
+	$i++;
+
+	// json doesn't allow comma on last entry so we check against rowCount()
+	if ($i !== $this->stmt->rowCount()) {
+		echo ',';
+	}
+}
+?>]}

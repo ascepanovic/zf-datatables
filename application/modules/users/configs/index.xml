@@ -1,0 +1,541 @@
+<?xml version="1.0"?>
+<config xmlns:zf="http://framework.zend.com/xml/zend-config-xml/1.0/">
+	<!-- These settings are used by jquery.dataTables.editable.js -->
+	<!-- <aoColumns> -->
+		<!--  <cssclass>required</cssclass> --><!-- Validation class to be used by jQuery validate -->
+		<!--  <indicator>Saving username...</indicator> -->
+		<!--  <tooltip>Click to edit username</tooltip> -->
+		<!--  <type></type> --> <!-- textarea|select -->
+		<!--  <submit></submit> --> <!-- Text for submit button -->
+		<!--  <onblur></onblur> --> <!-- onblur event, can use 'cancel' -->
+		<!--  <loadurl></loadurl> --> <!-- Where to get options from -->
+		<!--  <loadtype>GET</loadtype> --> <!-- Method used to get options -->
+		<!--  <data></data> --> <!-- Hard coded options -->
+	<!--  </aoColumns> -->
+    <production>
+    	<!-- Turn on/off editing -->
+    	<editable>1</editable>
+
+    	<!-- DBTable model used in datatable -->
+    	<dbModel>Users_Model_DbTable_Users</dbModel>
+    	<addForm>
+       		<!-- method to use when inserting records into model -->
+    		<method>insert</method>
+    		
+    		<class>Users_Form_AddUser</class>
+    		<title>Add New User</title>
+    		<success>User added.</success>
+    		<error>Failed to add area.</error>
+
+            <!-- Use filters in form only? Ignore the filters in this setup? -->
+            <useFormFiltersOnly>0</useFormFiltersOnly>
+            
+            <!-- Use validators in form only? Ignore the validators in this setup? -->
+            <useFormValidatorsOnly>0</useFormValidatorsOnly>
+    		
+    		<!-- Use to add extra data columns to entry -->
+<!--     		<extraDataColumn>
+    			<column>cust_id</column>
+    			<string>__CUSTID__</string>
+   			</extraDataColumn> -->
+    	</addForm>
+    	
+    	<editForm>
+       		<!-- method to use when updating model -->
+    		<method>update</method>
+    		
+    		<class>Users_Form_EditUser</class>
+    		<title>Edit User</title>
+    		<success>User updated.</success>
+    		<error>Failed to update user.</error>
+    		
+    		<!-- where to be appended to sql statement when editing records -->
+    		<where></where>
+    	</editForm>
+    	
+    	<delete>
+       		<!-- method to use when deleteing records from model -->
+    		<method>delete</method>
+    		
+    		<success>User removed.</success>
+    		<error>Failed to remove user.</error>
+    		
+    		<!-- where to be appended to sql statement when removing records -->
+    		<where></where>
+    	</delete>
+    	    	
+    	<columns>
+    		<label>ID</label> <!-- Displayed to users -->
+    		<!-- Column in database -->
+    		<data>
+				<read>
+					<column>id</column>
+				</read>
+                <write>
+                    <column>id</column>
+                    <where></where>
+                </write>
+   			</data>
+    		<sortable>1</sortable> <!-- Is column sortable? -->
+    		<searchable>0</searchable> <!-- Is column globally searchable? -->
+    		<naturalSort>1</naturalSort> <!-- Fix for sort fields with #s -->
+    		
+    		<columnSearch> <!-- Add search box for single column -->
+    			<enable>0</enable>
+    			<type>text</type>
+    			<name>id_search</name>
+    			<value>Search ID</value>
+    			<class>search_init</class> <!-- needed for js hooks -->
+    			<method>single</method> <!-- control PHP search method, like or single -->
+   			</columnSearch>
+   			
+   			<sClass>read_only</sClass> <!-- Class to give to each cell in this column. -->
+    	</columns>
+        
+        <columns>
+            <label></label> <!-- Displayed to users -->
+            <link>
+                <id>id</id> <!-- column from database used to replace {id} -->
+                <template>&lt;a href="{baseUrl}/index/edit/id/{id}"&gt;Edit&lt;/a&gt;</template>
+            </link> <!-- Column in database -->
+            <sortable>0</sortable> <!-- Is column sortable? -->
+            <searchable>0</searchable> <!-- Is column globally searchable? -->
+            <sClass>read_only</sClass> <!-- Class to give to each cell in this column. -->
+        </columns>      
+
+ 	 	<columns>
+    		<label>Active?</label> <!-- Displayed to users -->
+    		<!-- Column in database -->
+    		<data>
+				<read>
+					<column>IF(active, 'Yes', 'No')</column>
+				</read>
+    			<write>
+					<column>active</column>
+					<where></where>
+				</write>
+   			</data>
+    		<sortable>1</sortable> <!-- Is column sortable? -->
+    		<searchable>0</searchable> <!-- Is column globally searchable? -->
+    		<naturalSort>0</naturalSort> <!-- Fix for sort fields with #s -->
+			
+    		<!-- These settings are used by jquery.dataTables.editable.js -->
+    		<aoColumns>
+				<type>select</type> <!-- Class to give to each cell in this column. -->
+				<onblur>submit</onblur> <!-- Need when using select type -->
+    			<data>[['','Please select...'], [1,'Yes'],[0,'No']]</data>
+    			<cssclass>required</cssclass> <!-- Validation class to be used by jQuery validate -->
+    			<indicator>Saving...</indicator>
+    			<tooltip>Click to edit</tooltip>
+    		</aoColumns>
+
+    		<columnSearch> <!-- Add search box for single column -->
+    			<enable>1</enable>
+    			<type>select</type>
+    			<name>active_search</name>
+    			
+    			<!-- List static values for select here -->
+    			<values>
+    				<label>Yes</label>
+    				<value>Yes</value>
+    			</values>
+    			<values>
+    				<label>No</label>
+    				<value>No</value>
+    			</values>
+
+    			<class>search_init</class> <!-- needed for js hooks -->
+    			<method>single</method> <!-- control PHP search method, like or single -->
+   			</columnSearch>
+   			
+   			<sClass>center</sClass>
+    	</columns>
+    	
+  		<columns isSortDefault="true">
+    		<label>Email</label> <!-- Displayed to users -->
+    		<!-- Column in database -->
+    		<data>
+				<read>
+					<column>email</column>
+				</read>
+    			<write>
+					<column>email</column>
+					<where></where>
+				</write>
+   			</data>
+    		<sortable>1</sortable> <!-- Is column sortable? -->
+    		<searchable>1</searchable> <!-- Is column globally searchable? -->
+    		<naturalSort>1</naturalSort> <!-- Fix for sort fields with #s -->
+
+    		<columnSearch> <!-- Add search box for single column -->
+    			<enable>1</enable>
+    			<type>text</type>
+    			<name>label_search</name>
+   				<value>Search Label</value>
+    			<class>search_init</class> <!-- needed for js hooks -->
+    			<method>like</method> <!-- control PHP search method, like or single -->
+   			</columnSearch>
+
+   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+
+    		<!-- Zend Validators used to validate response -->
+    		<zendValidate>
+    			<name>Zend_Validate_Db_NoRecordExists</name>
+    			<!-- json encoded arguments for validator -->
+    			<arguments>["__TABLE__","__DATACOLUMN__","(__IDCOLUMN__!=__IDVALUE__)"]</arguments>
+    		</zendValidate>
+
+            <!-- These settings are used by jquery.dataTables.editable.js -->
+            <aoColumns>
+                <type>text</type> <!-- Class to give to each cell in this column. -->
+                <maxlength>100</maxlength>
+                <cssclass>required email</cssclass> <!-- Validation class to be used by jQuery validate -->
+                <indicator>Saving...</indicator>
+                <tooltip>Click to edit</tooltip>
+                <onblur>submit</onblur>
+            </aoColumns>
+    	</columns>
+
+  	  	<columns>
+  			<label>First Name</label> <!-- Displayed to users -->
+    		<!-- Column in database -->
+    		<data>
+				<read>
+					<column>firstName</column>
+				</read>
+    			<write>
+					<column>firstName</column>
+					<where></where>
+				</write>
+   			</data>
+    		<sortable>1</sortable> <!-- Is column sortable? -->
+    		<searchable>1</searchable> <!-- Is column globally searchable? -->
+    		<naturalSort>1</naturalSort> <!-- Fix for sort fields with #s -->
+
+    		<columnSearch> <!-- Add search box for single column -->
+    			<enable>1</enable>
+    			<type>text</type>
+    			<name>label_search</name>
+   				<value>Search Value</value>
+    			<class>search_init</class> <!-- needed for js hooks -->
+    			<method>like</method> <!-- control PHP search method, like or single -->
+   			</columnSearch>
+
+   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+    	</columns>
+
+  	  	<columns>
+  			<label>Last Name</label> <!-- Displayed to users -->
+    		<!-- Column in database -->
+    		<data>
+				<read>
+					<column>lastName</column>
+				</read>
+    			<write>
+					<column>lastName</column>
+					<where></where>
+				</write>
+   			</data>
+    		<sortable>1</sortable> <!-- Is column sortable? -->
+    		<searchable>1</searchable> <!-- Is column globally searchable? -->
+    		<naturalSort>1</naturalSort> <!-- Fix for sort fields with #s -->
+
+    		<columnSearch> <!-- Add search box for single column -->
+    			<enable>1</enable>
+    			<type>text</type>
+    			<name>label_search</name>
+   				<value>Search Value</value>
+    			<class>search_init</class> <!-- needed for js hooks -->
+    			<method>like</method> <!-- control PHP search method, like or single -->
+   			</columnSearch>
+
+   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+    	</columns>
+    	
+  	  	<columns>
+  			<label>Address</label> <!-- Displayed to users -->
+    		<!-- Column in database -->
+    		<data>
+				<read>
+					<column>address</column>
+				</read>
+    			<write>
+					<column>address</column>
+					<where></where>
+				</write>
+   			</data>
+    		<sortable>1</sortable> <!-- Is column sortable? -->
+    		<searchable>1</searchable> <!-- Is column globally searchable? -->
+    		<naturalSort>1</naturalSort> <!-- Fix for sort fields with #s -->
+
+    		<columnSearch> <!-- Add search box for single column -->
+    			<enable>1</enable>
+    			<type>text</type>
+    			<name>label_search</name>
+   				<value>Search Value</value>
+    			<class>search_init</class> <!-- needed for js hooks -->
+    			<method>like</method> <!-- control PHP search method, like or single -->
+   			</columnSearch>
+
+   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+    	</columns>
+
+  	  	<columns>
+  			<label>City</label> <!-- Displayed to users -->
+    		<!-- Column in database -->
+    		<data>
+				<read>
+					<column>city</column>
+				</read>
+    			<write>
+					<column>city</column>
+					<where></where>
+				</write>
+   			</data>
+    		<sortable>1</sortable> <!-- Is column sortable? -->
+    		<searchable>1</searchable> <!-- Is column globally searchable? -->
+    		<naturalSort>1</naturalSort> <!-- Fix for sort fields with #s -->
+
+    		<columnSearch> <!-- Add search box for single column -->
+    			<enable>1</enable>
+    			<type>text</type>
+    			<name>label_search</name>
+   				<value>Search Value</value>
+    			<class>search_init</class> <!-- needed for js hooks -->
+    			<method>like</method> <!-- control PHP search method, like or single -->
+   			</columnSearch>
+
+   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+    	</columns>
+   
+  	  	<columns>
+  			<label>State</label> <!-- Displayed to users -->
+    		<!-- Column in database -->
+    		<data>
+				<read>
+					<column>state</column>
+				</read>
+    			<write>
+					<column>state</column>
+					<where></where>
+				</write>
+   			</data>
+    		<sortable>1</sortable> <!-- Is column sortable? -->
+    		<searchable>1</searchable> <!-- Is column globally searchable? -->
+    		<naturalSort>1</naturalSort> <!-- Fix for sort fields with #s -->
+
+    		<columnSearch> <!-- Add search box for single column -->
+    			<enable>1</enable>
+    			<type>text</type>
+    			<name>label_search</name>
+   				<value>Search Value</value>
+    			<class>search_init</class> <!-- needed for js hooks -->
+    			<method>like</method> <!-- control PHP search method, like or single -->
+   			</columnSearch>
+
+   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+    	</columns>
+
+  	  	<columns>
+  			<label>Zip</label> <!-- Displayed to users -->
+    		<!-- Column in database -->
+    		<data>
+				<read>
+					<column>zip</column>
+				</read>
+    			<write>
+					<column>zip</column>
+					<where></where>
+				</write>
+   			</data>
+    		<sortable>1</sortable> <!-- Is column sortable? -->
+    		<searchable>1</searchable> <!-- Is column globally searchable? -->
+    		<naturalSort>1</naturalSort> <!-- Fix for sort fields with #s -->
+
+    		<columnSearch> <!-- Add search box for single column -->
+    			<enable>1</enable>
+    			<type>text</type>
+    			<name>label_search</name>
+   				<value>Search Value</value>
+    			<class>search_init</class> <!-- needed for js hooks -->
+    			<method>like</method> <!-- control PHP search method, like or single -->
+   			</columnSearch>
+
+   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+
+            <!-- Zend Filters used to filter response -->
+            <zendFilter>
+                <name>Zend_Filter_StringTrim</name>
+                <!-- json encoded arguments for filter -->
+                <arguments></arguments>
+            </zendFilter>
+            
+            <!-- Zend Validators used to validate response -->
+<!--            <zendValidate>
+                <name>Zend_Validate_PostCode</name>
+                <arguments></arguments>
+            </zendValidate> -->
+            
+            <!-- These settings are used by jquery.dataTables.editable.js -->
+            <aoColumns>
+                <type>text</type> <!-- Class to give to each cell in this column. -->
+                <mask>*****</mask>
+                <maxlength>5</maxlength>
+                <cssclass>required</cssclass> <!-- Validation class to be used by jQuery validate -->
+                <indicator>Saving...</indicator>
+                <tooltip>Click to edit</tooltip>
+                <onblur>submit</onblur>
+            </aoColumns>
+        </columns>
+    	
+  	  	<columns>
+  			<label>Phone</label> <!-- Displayed to users -->
+    		<!-- Column in database -->
+    		<data>
+				<read>
+					<column>phone</column>
+				</read>
+    			<write>
+					<column>phone</column>
+					<where></where>
+				</write>
+   			</data>
+    		<sortable>1</sortable> <!-- Is column sortable? -->
+    		<searchable>1</searchable> <!-- Is column globally searchable? -->
+    		<naturalSort>1</naturalSort> <!-- Fix for sort fields with #s -->
+
+    		<columnSearch> <!-- Add search box for single column -->
+    			<enable>1</enable>
+    			<type>text</type>
+    			<name>label_search</name>
+   				<value>Search Value</value>
+    			<class>search_init</class> <!-- needed for js hooks -->
+    			<method>like</method> <!-- control PHP search method, like or single -->
+   			</columnSearch>
+
+   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+
+            <!-- Zend Filters used to filter response -->
+            <zendFilter>
+                <name>Zend_Filter_StringTrim</name>
+                <!-- json encoded arguments for filter -->
+                <arguments></arguments>
+            </zendFilter>
+            <zendFilter>
+                <name>App_Filter_Phone</name>
+                <!-- json encoded arguments for filter -->
+                <arguments></arguments>
+            </zendFilter>
+            
+            <!-- Zend Validators used to validate response -->
+            <zendValidate>
+                <name>App_Validate_Phone</name>
+                <!-- json encoded arguments for filter -->
+                <arguments></arguments>
+            </zendValidate>
+
+            <!-- These settings are used by jquery.dataTables.editable.js -->
+            <aoColumns>
+                <type>masked</type> <!-- Class to give to each cell in this column. -->
+                <mask>999-999-9999</mask>
+                <maxlength>12</maxlength>
+                <cssclass>required phone</cssclass> <!-- Validation class to be used by jQuery validate -->
+                <indicator>Saving...</indicator>
+                <tooltip>Click to edit</tooltip>
+                <onblur>submit</onblur>
+            </aoColumns>
+    	</columns>
+    	
+    	<!-- Only tfoot works, thead is broken -->
+    	<columnSearchPosition>tfoot</columnSearchPosition>
+    	
+    	<!-- Special flash buttons for datatable -->
+     	<buttons>pdf</buttons>
+    	<buttons>csv</buttons>
+    	<buttons>copy</buttons>
+    	<buttons>print</buttons>
+
+		<!-- used for html table element id -->
+		<tableId>users</tableId>
+		
+		<!-- Configure DataTables to use server-side processing. Note that the sAjaxSource parameter must also be given in order to give DataTables a source to obtain the required data for each draw. -->
+		<!-- true or false -->
+		<bServerSide>true</bServerSide>
+
+    	<!-- jQuery Datatable setup -->
+		<config>
+			"bStateSave": true, //Enable or disable state saving. When enabled a cookie will be used to save table display information such as pagination information, display length, filtering and sorting. As such when the end user reloads the page the display display will match what thy had previously set up. 
+	    	// This initialisation variable allows you to specify exactly where in the DOM you want DataTables to inject the various controls it adds to the page (for example you might want the pagination controls at the top of the table). DIV elements (with or without a custom class) can also be added to aid styling. The follow syntax is used:
+			//	The following options are allowed:
+			//	'l' - Length changing
+			//	'f' - Filtering input
+			//	't' - The table!
+			//	'i' - Information
+			//	'p' - Pagination
+			//	'r' - pRocessing
+			//	The following constants are allowed:
+			//	'H' - jQueryUI theme "header" classes ('fg-toolbar ui-widget-header ui-corner-tl ui-corner-tr ui-helper-clearfix')
+			//	'F' - jQueryUI theme "footer" classes ('fg-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix')
+			//	The following syntax is expected:
+			//	'&lt;' and '&gt;' - div elements
+			//	'&lt;"class" and '&gt;' - div with a class
+			//	'&lt;"#id" and '&gt;' - div with an ID
+			//	Examples:
+			//	'&lt;"wrapper"flipt>', '&lt;lf&lt;t&gt;ip&gt;'
+			"sDom": '&lt;"H"lfr&gt;t&lt;"F"pTi&gt;',
+			
+			// This parameter allows you to readily specify the entries in the length drop down menu that DataTables shows when pagination is enabled. It can be either a 1D array of options which will be used for both the displayed option and the value, or a 2D array which will use the array in the first position as the value, and the array in the second position as the displayed options (useful for language strings such as 'All').
+			"aLengthMenu": [
+				[25, 50, 100, -1],
+				[25, 50, 100, "All"]
+			],
+			"oLanguage": {
+				"sSearch": 'Search all columns:'
+			},
+			
+			//Number of rows to display on a single page when using pagination. If feature enabled (bLengthChange) then the end user will be able to over-ride this to a custom setting using a pop-up menu. 
+			"iDisplayLength": 25,
+			
+			// Enable or disable the display of a 'processing' indicator when the table is being processed (e.g. a sort). This is particularly useful for tables with large amounts of data where it can take a noticeable amount of time to sort the entries. 
+			// true or false
+			"bProcessing": true,
+			
+			// Enable jQuery UI ThemeRoller support (required as ThemeRoller requires some slightly different and additional mark-up from what DataTables has traditionally used).
+			// true or false
+			"bJQueryUI": true,
+
+			// DataTables features two different built-in pagination interaction methods ('two_button' or 'full_numbers') which present different page controls to the end user.
+			"sPaginationType": 'full_numbers',
+			
+			// multi or single , currently multi does not work
+			"sRowSelect": 'single'
+		</config>
+		
+		<!-- Set the saved document's title / file name. In the case of a PDF file, this title
+			 is displayed in the document at the top (above the sMessage text, if given).
+			 If given as an empty string, TableTools will use the TITLE tag from the HTML document. -->
+		<reportTitle>User List</reportTitle>
+		
+		<!-- This parameter defines the name of the file that is to be saved. The special character
+			 "*" will be replaced by the HTML document's "TITLE" tag if it is present.
+			 Otherwise you can use this parameter to define the file name to be used. -->
+		<reportFilename>user_list</reportFilename>
+		
+		<!-- A free text input which can be used to add a custom description / summary to a PDF export. -->
+		<pdfMessage>User List</pdfMessage>
+		
+		<!-- Set the paper orientation for PDF output. -->
+		<pdfOrientation>landscape</pdfOrientation>
+		
+		<!-- Set the size of the paper used in the PDF saved file. -->
+		<pdfSize>letter</pdfSize>
+    </production>
+    <staging zf:extends="production">
+    </staging>
+    <testing zf:extends="production">
+    </testing>
+    <development zf:extends="production">
+    </development>
+    <development2 zf:extends="development">
+    </development2>
+</config>
