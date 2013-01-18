@@ -1,6 +1,6 @@
 <?php
 /** 
- * Used to create instances of classes.  Useful to passing an unspecifed array of arguments.
+ * Used to create instances of classes.  Useful to passing an unspecified array of arguments.
  * 
  * @author James Johnson
  */
@@ -14,7 +14,7 @@ class App_ReflectionInstance
     protected $_name = null; 
 
     /**
-     * Argments used when calling Reflection.
+     * Arguments used when calling Reflection.
      * 
      * @var array
      */

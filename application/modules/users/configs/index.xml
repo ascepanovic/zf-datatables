@@ -465,7 +465,7 @@
     	<!-- jQuery Datatable setup -->
 		<config>
 			"bStateSave": true, //Enable or disable state saving. When enabled a cookie will be used to save table display information such as pagination information, display length, filtering and sorting. As such when the end user reloads the page the display display will match what thy had previously set up. 
-	    	// This initialisation variable allows you to specify exactly where in the DOM you want DataTables to inject the various controls it adds to the page (for example you might want the pagination controls at the top of the table). DIV elements (with or without a custom class) can also be added to aid styling. The follow syntax is used:
+	    	// This initialization variable allows you to specify exactly where in the DOM you want DataTables to inject the various controls it adds to the page (for example you might want the pagination controls at the top of the table). DIV elements (with or without a custom class) can also be added to aid styling. The follow syntax is used:
 			//	The following options are allowed:
 			//	'l' - Length changing
 			//	'f' - Filtering input
