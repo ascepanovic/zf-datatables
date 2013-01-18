@@ -2,7 +2,7 @@
 /**
  * Standard controller to handle jquery datatables.  This controller
  * will use PHP to sort and filter dataset.  This will allow use of PHP
- * to modify result sets before displaying to the user.  Disadavantage is
+ * to modify result sets before displaying to the user.  Disadvantage is
  * we'll have to scan all records in the table.  If you have a large table
  * this may not want to use this.
  *
@@ -52,7 +52,7 @@ abstract class App_Controller_Datatable_array extends App_Controller_Datatable {
                     $columnSearch['all'] = $input['sSearch'];
                 }
 
-                // single column searchs
+                // single column searches
                 $i = 0;
                 foreach ($options['columns'] as $key=>$item) {
                     $searchable = (bool)$item['columnSearch']['enable'];
@@ -140,7 +140,7 @@ abstract class App_Controller_Datatable_array extends App_Controller_Datatable {
 	 *
 	 * @param array $search Search data
 	 * @param array $columns Column data
-	 * @param arrat $array Data set
+	 * @param array $array Data set
 	 * @return array New data set
 	 */
 	public function searchArray(array $search, array $columns, array $array) {
