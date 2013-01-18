@@ -172,7 +172,7 @@ abstract class App_Controller_Datatable extends App_Controller_Action {
             	}
             }
 
-            // single column searchs
+            // single column searches
             $i = 0;
             foreach ($options['columns'] as $key=>$item) {
                 $searchable = (bool)$item['columnSearch']['enable'];
@@ -843,7 +843,7 @@ abstract class App_Controller_Datatable extends App_Controller_Action {
     }
 
     /**
-	 * Add left joines to select statement for App_Controller_Datatable::datasourceAction().
+	 * Add left joins to select statement for App_Controller_Datatable::datasourceAction().
 	 *
 	 * @see App_Controller_Datatable::datasourceAction()
 	 * @param Zend_Db_Select $select Select statement.
@@ -923,7 +923,7 @@ abstract class App_Controller_Datatable extends App_Controller_Action {
      * Filter string using Zend Filters
      * 
      * @param string $value Value to filter
-     * @param array $filters Array of filters to use with arguments. (name=>Filter Name, arguments=>json encoded argmuments
+     * @param array $filters Array of filters to use with arguments. (name=>Filter Name, arguments=>json encoded arguments
      * @param array $search Search array for parameter replacements
      * @param array $replace Replace array for parameter replacements
      * @return string
