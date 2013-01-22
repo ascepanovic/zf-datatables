@@ -1,0 +1,13 @@
+2012-01-18 rhynodesigns
+* (corrections): a few spelling corrections
+
+2013-01-22  James Johnson <jamesj2@gmail.com>
+* (demo): make https friendly
+* (demo): fixed theme switcher
+* (demo): utilize ZF layout
+* (view scripts, controller, abstract controller): merged changes from the past year, mostly internal rework and bug fixes
+* (configuration): add ability to use Zend View Helpers, add <zfViewHelper> child node in <columns></columns> with class name of view helper
+* (package): upgraded to Datatables 1.9.3
+* (datatables.js): moved js function into a separate file to make it cacheable
+* (datatables.js): delay refresh when entering search values
+* (index.phtml, datatables.js): integrated jGrowl for non-obtrusive messages

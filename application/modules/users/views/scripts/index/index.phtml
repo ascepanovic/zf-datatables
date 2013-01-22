@@ -1,61 +1,68 @@
 <?php
 $baseUrl = $this->baseUrl();
 $urlPath = '/'.$this->module.'/'.$this->controller;
-$datatablesPath = $baseUrl . '/js/DataTables-1.9.0';
-$themeSwitcher = false; // header & footer doesn't display right when using the switch :(
+$datatablesPath = $baseUrl . '/js/DataTables-1.9.3';
+// use Super Theme Switcher?
+$themeSwitcher = true;
+$httpMethod = ($_SERVER['HTTPS'] == "on") ? 'https://' : 'http://';
+
+// jquery & jquery ui library
+$this->headScript()->appendFile($httpMethod.'ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js');
+$this->headScript()->appendFile($httpMethod.'ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js');
 
 if (!$themeSwitcher) {
+    // default theme if not using Super Theme Switcher
     $this->headLink()->appendStylesheet($datatablesPath.'/examples/examples_support/themes/smoothness/jquery-ui-1.8.4.custom.css');
 }
-$this->headLink()->appendStylesheet($datatablesPath.'/media/css/demo_page.css');
-$this->headLink()->appendStylesheet($datatablesPath.'/media/css/demo_table_jui.css');
+// necessary css for jquery ui to work
 $this->headLink()->appendStylesheet($datatablesPath.'/extras/TableTools/media/css/TableTools_JUI.css');
+$this->headLink()->appendStylesheet($datatablesPath.'/media/css/jquery.dataTables_themeroller.css');
+// custom tweaks to ui
+$this->headLink()->appendStylesheet($baseUrl.'/css/datatables.css');
 
-$this->headScript()->appendFile('http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js');
-$this->headScript()->appendFile('http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.4/jquery-ui.min.js');
+// datatables library
 $this->headScript()->appendFile($datatablesPath.'/media/js/jquery.dataTables.min.js', $type = 'text/javascript', $attrs = array());
-
-if ($this->datatableOptions['editable'] == 1) {
-    $this->headScript()->appendFile($baseUrl.'/js/datatables-editable/jquery.dataTables.editable.js', $type = 'text/javascript', $attrs = array());
-    $this->headScript()->appendFile($baseUrl.'/js/maskedinput/jquery.maskedinput.js', $type = 'text/javascript', $attrs = array());
-    $this->headScript()->appendFile($baseUrl.'/js/jeditable/jquery.jeditable.min.js', $type = 'text/javascript', $attrs = array());
-    $this->headScript()->appendFile($baseUrl.'/js/jeditable/jquery.jeditable.masked.js', $type = 'text/javascript', $attrs = array());
-    $this->headScript()->appendFile('https://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js');
-    $this->headScript()->appendFile('https://ajax.aspnetcdn.com/ajax/jquery.validate/1.9/additional-methods.min.js');
-    $this->headScript()->appendFile($baseUrl.'/js/jvalidate/jquery.validate.zipcode.js', $type = 'text/javascript', $attrs = array());
-}
-
+// extra datatables features.. print, csv, pdf, and copy functions
 $this->headScript()->appendFile($datatablesPath.'/extras/TableTools/media/js/ZeroClipboard.js', $type = 'text/javascript', $attrs = array());
 $this->headScript()->appendFile($datatablesPath.'/extras/TableTools/media/js/TableTools.min.js', $type = 'text/javascript', $attrs = array());
 
-echo $this->headLink();
-echo $this->headScript();
-echo $this->inlineScript();
+// make datatables editable
+if ($this->datatableOptions['editable'] == 1) {
+    $this->headScript()->appendFile($baseUrl.'/js/datatables-editable/jquery.dataTables.editable.js', $type = 'text/javascript', $attrs = array());
+    $this->headScript()->appendFile($baseUrl.'/js/jeditable/jquery.jeditable.min.js', $type = 'text/javascript', $attrs = array());
+    // masked input for phone #
+    $this->headScript()->appendFile($baseUrl.'/js/maskedinput/jquery.maskedinput.js', $type = 'text/javascript', $attrs = array());
+    $this->headScript()->appendFile($baseUrl.'/js/jeditable/jquery.jeditable.masked.js', $type = 'text/javascript', $attrs = array());
+    // jquery validate so we can validate before submitting changes
+    $this->headScript()->appendFile($httpMethod.'ajax.aspnetcdn.com/ajax/jquery.validate/1.9/jquery.validate.min.js');
+    $this->headScript()->appendFile($httpMethod.'ajax.aspnetcdn.com/ajax/jquery.validate/1.9/additional-methods.min.js');
+    $this->headScript()->appendFile($baseUrl.'/js/jvalidate/jquery.validate.zipcode.js', $type = 'text/javascript', $attrs = array());
+}
+
+// Super Theme Switcher @see https://github.com/harborhoffer/Super-Theme-Switcher
+if ($themeSwitcher) {
+    $this->headScript()->appendFile($baseUrl.'/js/jquery.themeswitcher.min.js', $type = 'text/javascript', $attrs = array());
+}
+
+// custom js to make this page work
+$this->headScript()->appendFile($baseUrl.'/js/datatables.js', $type = 'text/javascript', $attrs = array());
+
+// jgrowl non-obtrusive messages
+$this->headLink()->appendStylesheet($baseUrl.'/js/jgrowl/jquery.jgrowl.css');
+$this->headScript()->appendFile($baseUrl.'/js/jgrowl/jquery.jgrowl_minimized.js', $type = 'text/javascript', $attrs = array());
 ?>
-<style type="text/css" media="screen">
-.ui-button .ui-button-text, .ui-button-text-icon .ui-button-text, .ui-button-text-icons .ui-button-text {
-	padding: .1em 5px .1em 27px;
-}
-.ui-button-text-only .ui-button-text, .ui-button-text-icons .ui-button-text {
-	padding: .1em 5px .1em 5px;
-}
-.ui-widget {
-    font-size: 1em;
-}
-</style>
 <div id="switcher"></div>
-<div class="users">
+<table><tr><td>
+<div class="div_<?= $this->datatableOptions['tableId'] ?>">
 <a href="<?= $this->url(array('action'=>'add')) ?>"><?= $this->datatableOptions['addForm']['title'] ?></a>
-<table id="<?= $this->datatableOptions['tableId'] ?>" width="100%"  cellpadding="0" cellspacing="0" border="0" class="display">
+<table id="<?= $this->datatableOptions['tableId'] ?>" class="display">
 	<thead>
-		<tr>
-<?php
+		<tr><?php
 foreach ($this->datatableOptions['columns'] as $item) {
     echo '<th>';
     echo $this->escape($item['label']);
     echo '</th>';
-} ?>
-		</tr>
+} ?></tr>
 	</thead>
 <?php if ($this->datatableOptions['columnSearchPosition'] == 'thead') : ?>
 	<thead>
@@ -87,9 +94,6 @@ foreach ($this->datatableOptions['columns'] as $item) {
 	<tfoot>
 		<tr>
 <?php
-/**
- * Selects for searches.
- */
 foreach ($this->datatableOptions['columns'] as $item) {
     echo '<td class="ui-state-default '.$item['sClass'].'">';
     if ($this->datatableOptions['columnSearchPosition'] == 'tfoot' && (bool)$item['columnSearch']['enable']) {
@@ -113,315 +117,252 @@ foreach ($this->datatableOptions['columns'] as $item) {
                 echo '</select>';
                 break;
         }
+    } else {
+        echo '<input type="hidden" name="'.$this->escape($item['columnSearch']['name']).'" value="" style="padding:0;margin:0;"/>';
     }
     echo '</td>';
 } ?>
 		</tr>
 	</tfoot>
 </table>
-
-<div id="dialog"></div>
+</div>
+</td></tr></table>
+<div id="deleteRowDialog"></div>
 <script type="text/javascript">
 //<![CDATA[
-
-// extend datatables so we can update fields without refreshing table
-$.fn.dataTableExt.oApi.fnStandingRedraw = function(oSettings) {
-	//redraw to account for filtering and sorting
-	// concept here is that (for client side) there is a row got inserted at the end (for an add)
-	// or when a record was modified it could be in the middle of the table
-	// that is probably not supposed to be there - due to filtering / sorting
-	// so we need to re process filtering and sorting
-	// BUT - if it is server side - then this should be handled by the server - so skip this step
-	if(oSettings.oFeatures.bServerSide === false){
-		var before = oSettings._iDisplayStart;
-		oSettings.oApi._fnReDraw(oSettings);
-		//iDisplayStart has been reset to zero - so lets change it back
-		oSettings._iDisplayStart = before;
-		oSettings.oApi._fnCalculateEnd(oSettings);
-	}
-
-	//draw the 'current' page
-	oSettings.oApi._fnDraw(oSettings);
-};
-
-//extend datatables so that we can reset all filters
-$.fn.dataTableExt.oApi.fnResetAllFilters = function (oSettings, bDraw/*default true*/) {
-    for(iCol = 0; iCol < oSettings.aoPreSearchCols.length; iCol++) {
-            oSettings.aoPreSearchCols[ iCol ].sSearch = '';
-    }
-    oSettings.oPreviousSearch.sSearch = '';
-
-    if(typeof bDraw === 'undefined') bDraw = true;
-    if(bDraw) this.fnDraw();
-}
-
-//store nodes after datatables gets initialize
-var nNodes = null;
-var asInitVals = new Array();
-
-$(document).ready(function() {
-	/* Init the table */
-	var oTable = $('#<?= $this->escape($this->datatableOptions['tableId']) ?>').dataTable( {
-		"bServerSide": <?= $this->datatableOptions['bServerSide'] ?>,
+var oTable = null;
+var dt_tableId = '<?= $this->escape($this->datatableOptions['tableId']) ?>';
+var dt_columnSearchPosition = '<?= $this->datatableOptions['columnSearchPosition'] ?>';
+var dt_delete = <?= (isset($this->datatableOptions['delete'])) ? 'true' : 'false' ?>;
+var dt_makeEditable = <?= ($this->datatableOptions['editable'] == 1) ? 'true' : 'false' ?>;
+var dt_options = {
+    "bServerSide": <?= $this->datatableOptions['bServerSide'] ?>,
 <? if (count($this->datatableOptions['buttons']) > 0) : ?>
-		"oTableTools": {
-			"sSwfPath": "<?= $baseUrl; ?>/js/DataTables-1.9.0/extras/TableTools/media/swf/copy_cvs_xls_pdf.swf",
-			"sRowSelect": "<?= $this->datatableOptions['rowSelect'] ?>",
-			"aButtons": [
-<? if (in_array('pdf',$this->datatableOptions['buttons'])) : ?>
-                        	{
-                                "sExtends": "pdf",
-                                "sTitle": "<?= $this->escape($this->datatableOptions['reportTitle']) ?>",
-                                "sPdfMessage": "<?= $this->escape($this->datatableOptions['pdfMessage']) ?>",
-                                "sFileName": "<?= $this->escape($this->datatableOptions['reportFilename']) ?>.pdf",
-                                "sPdfOrientation": "<?= $this->escape($this->datatableOptions['pdfOrientation']) ?>",
-                                "sPdfSize": "<?= $this->escape($this->datatableOptions['$this->pdfSize']) ?>"
-                            },
-<? endif ?>
-<? if (in_array('csv',$this->datatableOptions['buttons'])) : ?>
-                        	{
-                                "sExtends": "csv",
-                                "sTitle": "<?= $this->escape($this->datatableOptions['reportTitle']) ?>",
-                                "sFileName": "<?= $this->escape($this->datatableOptions['reportFilename']) ?>.csv",
-                                "sFieldBoundary": '"'
-                            },
-<? endif ?>
-<? if (in_array('copy',$this->datatableOptions['buttons'])) : ?>
-                            {
-                                "sExtends": "copy",
-                                "sButtonText": "Copy to clipboard"
-                            },
-<? endif ?>
-<? if (in_array('print',$this->datatableOptions['buttons'])) : ?>
-                            {
-                                "sExtends": "print",
-                                "sButtonText": "Print"
-                            }
-                            <? endif ?>
-						]
-		},
-<? endif ?>
-		"sAjaxSource": '<?= $this->baseUrl() ?><?= $urlPath ?>/datasource/?format=json',
-		"fnInitComplete": function(oSettings, json) {
-		},
-		"aoColumns": [<?php
-$i = 0;
-$count = count((array)$this->datatableOptions['columns']);
-foreach ((array)$this->datatableOptions['columns'] as $item) {
-    $array = array();
-    if ($item['sortable'] == 1) {
-        $array[] = 'bSortable: true';
-    } else {
-        $array[] = 'bSortable: false';
+    "oTableTools": {
+        "sSwfPath": "<?= $datatablesPath ?>/extras/TableTools/media/swf/copy_csv_xls_pdf.swf",
+        "sRowSelect": "<?= $this->datatableOptions['rowSelect'] ?>",
+        "aButtons": [
+            <? if (in_array('pdf',$this->datatableOptions['buttons'])) : ?>
+                {
+                    "sExtends": "pdf",
+                    "sTitle": "<?= $this->escape($this->datatableOptions['reportTitle']) ?>",
+                    "sPdfMessage": "<?= $this->escape($this->datatableOptions['pdfMessage']) ?>",
+                    "sFileName": "<?= $this->escape($this->datatableOptions['reportFilename']) ?>.pdf",
+                    "sPdfOrientation": "<?= $this->escape($this->datatableOptions['pdfOrientation']) ?>",
+                    "sPdfSize": "<?= $this->escape($this->datatableOptions['$this->pdfSize']) ?>"
+                },
+                <? endif ?>
+            <? if (in_array('csv',$this->datatableOptions['buttons'])) : ?>
+                {
+                    "sExtends": "csv",
+                    "sTitle": "<?= $this->escape($this->datatableOptions['reportTitle']) ?>",
+                    "sFileName": "<?= $this->escape($this->datatableOptions['reportFilename']) ?>.csv",
+                    "sFieldBoundary": '"'
+                },
+                <? endif ?>
+            <? if (in_array('copy',$this->datatableOptions['buttons'])) : ?>
+                {
+                    "sExtends": "copy",
+                    "sButtonText": "Copy to clipboard"
+                },
+                <? endif ?>
+            <? if (in_array('print',$this->datatableOptions['buttons'])) : ?>
+                {
+                    "sExtends": "print",
+                    "sButtonText": "Print"
+                }
+                <? endif ?>
+        ]
+    },
+    <? endif ?>
+    "sAjaxSource": '<?= $this->baseUrl() ?><?= $urlPath ?>/datasource/?format=json',
+    "fnInitComplete": function(oSettings, json) {
+        $('#'+dt_tableId+' '+dt_columnSearchPosition+' :input').each( function (i) {
+            var cols = oSettings.aoPreSearchCols;
+            if (typeof cols[i].sSearch != 'undefined' && cols[i].sSearch != '') {
+                $(this).val(cols[i].sSearch);
+                $(this).removeClass('search_init');
+            }
+        } );
+    },
+    "aoColumns": [<?php
+    $i = 0;
+    $count = count((array)$this->datatableOptions['columns']);
+    foreach ((array)$this->datatableOptions['columns'] as $item) {
+        $array = array();
+        if ($item['sortable'] == 1) {
+            $array[] = 'bSortable: true';
+        } else {
+            $array[] = 'bSortable: false';
+        }
+
+        if ($item['hidden'] == 1) {
+            $array[] = 'bVisible: false';
+        } else {
+            $array[] = 'bVisible: true';
+        }
+
+        if ($item['searchable'] == 1) {
+            $array[] = 'bSearchable: true';
+        } else {
+            $array[] = 'bSearchable: false';
+        }
+
+        if (!empty($item['sClass'])) {
+            $array[] = 'sClass: "'.$this->escape($item['sClass']).'"';
+        }
+
+        if (!empty($item['mDataProp'])) {
+            $array[] = 'mDataProp: "'.$this->escape($item['mDataProp']) . '"';
+        }
+
+        if (!empty($item['sWidth'])) {
+            $array[] = 'sWidth: "'.$this->escape($item['sWidth']) . '"';
+        }
+
+        echo '{'.implode(',',$array).'}';
+
+        $i++;
+        if ($i !== $count) {
+            echo ',';
+        }
     }
+    ?>
+    ],
+    "aaSorting": [<?php
+    $i = 0;
+    $count = count((array)$this->datatableOptions['columns']);
+    foreach ((array)$this->datatableOptions['columns'] as $item) {
+        $array = array();
+        if ($item['isSortDefault'] == 1 || $item['isSortDefault'] == "true") {
+            $array[] = $i;
+        }
 
-    if ($item['hidden'] == 1) {
-        $array[] = 'bVisible: false';
-    } else {
-        $array[] = 'bVisible: true';
-    }
+        if (!empty($item['sortDefaultDirection'])) {
+            $array[] = '"'.$item['sortDefaultDirection'].'"';
+        }
 
-    if ($item['searchable'] == 1) {
-        $array[] = 'bSearchable: true';
-    } else {
-        $array[] = 'bSearchable: false';
-    }
+        if (empty($array)) {
+            $array[] = $i;
+            $array[] = 'null';
+        }
 
-    if ($item['sClass'] != '') {
-        $array[] = 'sClass: "'.$this->escape($item['sClass']).'"';
-    }
+        $i++;
 
-    if ($item['mDataProp'] != '') {
-        $array[] = 'mDataProp: "'.$this->escape($item['mDataProp']) . '"';
-    }
-
-    echo '{'.implode(',',$array).'}';
-
-    $i++;
-    if ($i !== $count) {
-        echo ',';
-    }
-}
-?>
-],
-<?= $this->datatableOptions['config'] ?>
-	} );
-
-<? if ($this->datatableOptions['editable'] == 1) : ?>
-	makeEditable();
-
-    function makeEditable() {
-        oTable.makeEditable({
-        	sUpdateURL: "<?= $this->url(array('action'=>'update')) ?>/?format=json",
-        	sAddURL: "<?= $this->url(array('action'=>'add')) ?>",
-        	sAddHttpMethod: "POST",
-        	oAddNewRowButtonOptions: {	label: "Add",
-        		icons: {primary:'ui-icon-plus'}
-        	},
-        	oAddNewRowFormOptions: {
-                title: '<?= $this->datatableOptions['addForm']['title'] ?>',
-        		show: "blind",
-        		hide: "explode",
-                modal: true
-        	}	,
-        	oAddNewRowOkButtonOptions: {
-				label: "Confirm",
-                                icons: { primary: 'ui-icon-check' },
-                                name: "action",
-                                value: "add-new"
-                            },
-            sDeleteHttpMethod: "GET",
-        	sDeleteURL: "<?= $this->url(array('action'=>'delete')) ?>/?format=json",
-			"aoColumns": [<?php
-$i = 0;
-$count = count((array)$this->datatableOptions['columns']);
-foreach ((array)$this->datatableOptions['columns'] as $item) {
-    if ((bool)$item['hidden']) {
-        continue;
-    }
-
-    $array = array();
-
-    if (is_array($item['aoColumns'])) {
-        foreach ($item['aoColumns'] as $key2=>$item2) {
-            if (ctype_digit($item2)) {
-                $array[] = $this->escape($key2).': '.$item2;
-            } else if (ctype_alnum($item2) || (substr($item2,0,1) != '{' && substr($item2,0,1) != '[')) {
-                $array[] = $this->escape($key2).': "'.$this->escape($item2).'"';
-            } else {
-                $array[] = $this->escape($key2).': '.$item2;
+        if (count($array)>0) {
+            echo '['.implode(',',$array).']';
+            if ($i !== $count) {
+                echo ',';
             }
         }
     }
+    ?>],
+<?= $this->datatableOptions['config'] ?>
+};
 
-    echo '{'.implode(',',$array).'}';
-    $i++;
-    if ($i !== $count) {
-        echo ','.PHP_EOL;
-    }
-}
-?>
-			]
-<? if (isset($this->datatableOptions['delete'])) : ?>
-			,oDeleteRowButtonOptions: {	label: "Remove",
-        		icons: {primary:'ui-icon-trash'}
-        	},
-        	sAddDeleteToolbarSelector: ".dataTables_length"
-<? endif ?>
-//        	fnOnDeleting: function (tr, id, fnDeleteRow) {
-//        		confirmDelete(id);
-//                return true;
-//            }
-    	});
-    }
+<? if ($this->datatableOptions['editable'] == 1) : ?>
+function makeEditable() {
+    oTable.makeEditable({
+        sUpdateURL: "<?= $this->url(array('action'=>'update')) ?>/?format=json",
+        sAddURL: "<?= $this->url(array('action'=>'add')) ?>",
+        sAddHttpMethod: "POST",
+        oAddNewRowButtonOptions: {	label: "Add",
+            icons: {primary:'ui-icon-plus'}
+        },
+        oAddNewRowFormOptions: {
+            title: '<?= $this->datatableOptions['addForm']['title'] ?>',
+            show: "blind",
+            hide: "explode",
+            modal: true
+        }	,
+        oAddNewRowOkButtonOptions: {
+            label: "Confirm",
+            icons: { primary: 'ui-icon-check' },
+            name: "action",
+            value: "add-new"
+        },
+        sDeleteHttpMethod: "GET",
+        sDeleteURL: "<?= $this->url(array('action'=>'delete')) ?>/?format=json",
+        "aoColumns": [<?php
+            $i = 0;
+            $count = count((array)$this->datatableOptions['columns']);
+            foreach ((array)$this->datatableOptions['columns'] as $item) {
+                if ((bool)$item['hidden']) {
+                    continue;
+                }
 
-	jQuery('#dialog').html('Are you sure you want to delete selected row(s)?');
-	jQuery("#dialog").dialog({ buttons: {
-		'Ok': function () {
-			var id = $(this).data('id'); // Get the stored result
-			$(this).data('result') = oTable.fnDeleteRow(id);
+                $array = array();
 
-			$(this).dialog("close"); },
-		'Cancel': function () { $(this).dialog("close"); }
-	 },
-       draggable: false,
-       modal: true,
-       width: 500,
-       maxHeight: 400,
-       autoOpen: false
+                if (is_array($item['aoColumns'])) {
+                    foreach ($item['aoColumns'] as $key2=>$item2) {
+                        if ($key2 == 'data' && !empty($item2['loadValues']['model'])) {
+                            $model = new $item2['loadValues']['model'];
+                            $values = $model->$item2['loadValues']['method']();
+
+                            $out = array();
+                            foreach ($values as $key3=>$item3) {
+                                $out[] = "['".App_Filter_EscapeJs::filter($key3,false)."','".App_Filter_EscapeJs::filter($item3,false)."']";
+                            }
+
+                            $countArray = count($array);
+                            $array[$countArray] = "data: [['','Please select...'],";
+                            $array[$countArray] .= implode(',',$out);
+                            $array[$countArray] .= "]";
+                        } else if (ctype_digit($item2)) {
+                            $array[] = $this->escape($key2).': '.$item2;
+                        } else if (ctype_alnum($item2) || (substr($item2,0,1) != '{' && substr($item2,0,1) != '[')) {
+                            $array[] = $this->escape($key2).': "'.$this->escape($item2).'"';
+                        } else {
+                            $array[] = $this->escape($key2).': '.$item2;
+                        }
+                    }
+                }
+
+                echo '{'.implode(',',$array).'}';
+                $i++;
+                if ($i !== $count) {
+                    echo ','.PHP_EOL;
+                }
+            }
+            ?>
+        ]
+        <? if (isset($this->datatableOptions['delete'])) : ?>
+            ,oDeleteRowButtonOptions: {	label: "Remove",
+                icons: {primary:'ui-icon-trash'}
+            },
+            sAddDeleteToolbarSelector: ".dataTables_length",
+            fnOnDeleting: function (tr, id, fnDeleteRow) {
+                confirmDelete(id,fnDeleteRow);
+                return false;
+            },
+            fnOnDeleted: function (result) {
+                if (result == 'success') {
+                    $.jGrowl.defaults.position = 'center';
+                    $.jGrowl('<?= $this->escape($this->datatableOptions['delete']['success']) ?>',{ sticky: true, theme: 'successMessage' });
+                } else {
+                    $.jGrowl.defaults.position = 'center';
+                    $.jGrowl('<?= $this->escape($this->datatableOptions['delete']['error']) ?>',{ sticky: true, theme: 'errorMessage' });
+                }
+
+            }
+            <? endif ?>
     });
-
-    function confirmDelete(id) {
-    	$('#dialog').data('id', id).dialog( "open" );
-    }
-<? endif ?>
-    $("#<?= $this->escape($this->datatableOptions['tableId']) ?> <?= $this->datatableOptions['columnSearchPosition'] ?> input").keyup( function () {
-    	/* Filter on the column (the index) of this element */
-    	cell = $(this);
-    	oTable.fnFilter( this.value, cell.parent().parent('tr').children().index(cell.parent("td")) );
-    } );
-
-    /*
-     * Support functions to provide a little bit of 'user friendlyness' to the textboxes in
-     * the footer
-     */
-    $("#<?= $this->escape($this->datatableOptions['tableId']) ?> <?= $this->datatableOptions['columnSearchPosition'] ?> input, #<?= $this->escape($this->datatableOptions['tableId']) ?> <?= $this->datatableOptions['columnSearchPosition'] ?> select").each( function (i) {
-    	asInitVals[i] = $(this).val();
-    } );
-
-    $("#<?= $this->escape($this->datatableOptions['tableId']) ?> <?= $this->datatableOptions['columnSearchPosition'] ?> input").focus( function () {
-    	if ( this.className == "search_init" )
-    	{
-    		this.className = "";
-    		this.value = "";
-    	}
-    } );
-
-    $("#<?= $this->escape($this->datatableOptions['tableId']) ?> <?= $this->datatableOptions['columnSearchPosition'] ?> input").blur( function (i) {
-    	if ( this.value == "" )
-    	{
-    		this.className = "search_init";
-    		this.value = asInitVals[$("#<?= $this->escape($this->datatableOptions['tableId']) ?> <?= $this->datatableOptions['columnSearchPosition'] ?> input").index(this)];
-    	}
-    } );
-
-     /* Add event listeners to the two range filtering inputs */
-    $('#<?= $this->escape($this->datatableOptions['tableId']) ?> select').change( function() {
-    	cell = $(this);
-    	oTable.fnFilter( $(this).val(), cell.parent().parent('tr').children().index(cell.parent("td")) );
-    } );
-
-    <? if ($this->datatableOptions['editable'] != 1) : ?>
-//        $('#table_id_length').append('<button id="btnDeleteRow" class="delete_row ui-button ui-widget ui-state-default ui-corner-all ui-button-text-icon" role="button" aria-disabled="false"><span class="ui-button-icon-primary ui-icon ui-icon-trash"></span><span class="ui-button-text">Remove</span></button>');
-//        oDeleteRowButton.click(_fnOnRowDelete);
-    <? endif ?>
-
-    // Add button to allow users to clear all search filters
-    // useful is something goes awry.
-    $('<div />').addClass('clearFilters').css({'float' : 'left'}).attr({'id' : 'clearFilters'}).prependTo($('#<?= $this->escape($this->datatableOptions['tableId']) ?>_filter'));
-    $('<button />').attr({
-        'id' : 'clearFilters'
-    })
-    .html('Clear Search')
-    .appendTo($('#clearFilters'));
-    $("button", ".clearFilters").button();
-
-    $('#clearFilters').click( function () {
-        oTable.fnResetAllFilters();
-        $('#<?= $this->escape($this->datatableOptions['tableId']) ?> tfoot td select,#<?= $this->escape($this->datatableOptions['tableId']) ?> tfoot td input').each(function (index,val) {
-            $(this).val('');
-        } )
-	});
-});
-
-/* Get the rows which are currently selected */
-function fnGetSelected( oTableLocal )
-{
-	var aReturn = new Array();
-	var aTrs = oTableLocal.fnGetNodes();
-
-	for ( var i=0 ; i<aTrs.length ; i++ )
-	{
-		if ( $(aTrs[i]).hasClass('DTTT_selected') )
-		{
-			aReturn.push( aTrs[i] );
-		}
-	}
-
-	return aReturn;
 }
+    <? endif ?>
 
 <?php if ($themeSwitcher) : ?>
 $(document).ready(function(){
-  $('#switcher').themeswitcher();
+    $("#switcher").themeswitcher({
+        imgpath: "images/",
+        loadTheme: "blitzer"
+    });
+//  $('#switcher').themeswitcher();
 });
-<? endif ?>
-
+    <? endif ?>
 //]]>
-</script>
-<script type="text/javascript" src="http://jqueryui.com/themeroller/themeswitchertool/">
 </script>
 <? if ($this->datatableOptions['editable'] == 1) : ?>
 <? //echo $this->form ?>
-<!--<? //echo $this->render('datatables/_addNewRow.phtml') ?>-->
+<!--<? //echo $this->render($this->scriptDirectory.'/_addNewRow.phtml') ?>-->
 <? endif ?>
+<?= $this->flashMessenger(); ?>

@@ -1,5 +1,12 @@
 <?xml version="1.0"?>
 <config xmlns:zf="http://framework.zend.com/xml/zend-config-xml/1.0/">
+<!-- WARNING! -->
+<!--
+	 The unique id or key for your data must be in the first column
+	 if you use lets say a link instead it will break things.
+	 To get around this problem use a hidden first column with the key/id.
+-->
+
 	<!-- These settings are used by jquery.dataTables.editable.js -->
 	<!-- <aoColumns> -->
 		<!--  <cssclass>required</cssclass> --><!-- Validation class to be used by jQuery validate -->
@@ -16,12 +23,19 @@
     	<!-- Turn on/off editing -->
     	<editable>1</editable>
 
-    	<!-- DBTable model used in datatable -->
-    	<dbModel>Users_Model_DbTable_Users</dbModel>
+    	<!-- DbTable model used in datatable -->
+    	<dbModel>
+            <class>Users_Model_DbTable_Users</class>
+            <!--<alias></alias>-->
+            <!--<distinct>1</distinct>-->
+            <!--<group>-->
+                <!--<append>s.id</append>-->
+            <!--</group> &lt;!&ndash; group by &ndash;&gt;-->
+		</dbModel>
     	<addForm>
        		<!-- method to use when inserting records into model -->
     		<method>insert</method>
-    		
+
     		<class>Users_Form_AddUser</class>
     		<title>Add New User</title>
     		<success>User added.</success>
@@ -29,79 +43,102 @@
 
             <!-- Use filters in form only? Ignore the filters in this setup? -->
             <useFormFiltersOnly>0</useFormFiltersOnly>
-            
+
             <!-- Use validators in form only? Ignore the validators in this setup? -->
             <useFormValidatorsOnly>0</useFormValidatorsOnly>
-    		
-    		<!-- Use to add extra data columns to entry -->
-<!--     		<extraDataColumn>
-    			<column>cust_id</column>
-    			<string>__CUSTID__</string>
-   			</extraDataColumn> -->
+
+            <!--  Sometimes we need to process the form data before
+                  saving it.  This is a user supplied method that
+                  can be used to handle such.  Place your method in
+                  your controller. -->
+            <processSaveForm>processSaveForm</processSaveForm>
+            <!--  Sometimes we need to process the form data before
+                  displaying it.  This is a user supplied method that
+                  can be used to handle such.  Place your method in
+                  your controller. -->
+            <processDisplayForm>processDisplayAddForm</processDisplayForm>
     	</addForm>
-    	
+
     	<editForm>
        		<!-- method to use when updating model -->
     		<method>update</method>
-    		
+
     		<class>Users_Form_EditUser</class>
     		<title>Edit User</title>
     		<success>User updated.</success>
     		<error>Failed to update user.</error>
-    		
+
     		<!-- where to be appended to sql statement when editing records -->
     		<where></where>
+            <!--  Sometimes we need to process the form data before
+                  saving it.  This is a user supplied method that
+                  can be used to handle such.  Place your method in
+                  your controller. -->
+            <processSaveForm>processSaveForm</processSaveForm>
+            <!--  Sometimes we need to process the form data before
+                  displaying it.  This is a user supplied method that
+                  can be used to handle such.  Place your method in
+                  your controller. -->
+            <processDisplayForm>processDisplayEditForm</processDisplayForm>
     	</editForm>
-    	
+
     	<delete>
        		<!-- method to use when deleteing records from model -->
     		<method>delete</method>
-    		
+
     		<success>User removed.</success>
     		<error>Failed to remove user.</error>
-    		
+
     		<!-- where to be appended to sql statement when removing records -->
     		<where></where>
     	</delete>
-    	    	
+
     	<columns>
     		<label>ID</label> <!-- Displayed to users -->
     		<!-- Column in database -->
     		<data>
-				<read>
+				<read as="">
 					<column>id</column>
 				</read>
                 <write>
                     <column>id</column>
                     <where></where>
                 </write>
+				<search>
+					<column>id</column>
+				</search>
    			</data>
     		<sortable>1</sortable> <!-- Is column sortable? -->
-    		<searchable>0</searchable> <!-- Is column globally searchable? -->
+    		<searchable>1</searchable> <!-- Is column globally searchable? -->
     		<naturalSort>1</naturalSort> <!-- Fix for sort fields with #s -->
-    		
+
     		<columnSearch> <!-- Add search box for single column -->
-    			<enable>0</enable>
+    			<enable>1</enable>
     			<type>text</type>
     			<name>id_search</name>
     			<value>Search ID</value>
     			<class>search_init</class> <!-- needed for js hooks -->
     			<method>single</method> <!-- control PHP search method, like or single -->
    			</columnSearch>
-   			
-   			<sClass>read_only</sClass> <!-- Class to give to each cell in this column. -->
+
+   			<sClass>read_only right</sClass> <!-- Class to give to each cell in this column. -->
+            <sWidth>1%</sWidth>
     	</columns>
-        
+
         <columns>
-            <label></label> <!-- Displayed to users -->
+            <label></label> <!-- Label displayed to users -->
             <link>
-                <id>id</id> <!-- column from database used to replace {id} -->
-                <template>&lt;a href="{baseUrl}/index/edit/id/{id}"&gt;Edit&lt;/a&gt;</template>
+				<!-- atoms are used for search in replace in link template -->
+                <atoms>
+                    <id>id</id> <!-- column from database used to replace {id}, node is tag name and value is the database column -->
+                </atoms>
+                <template>&lt;a href="{moduleUrl}/index/edit/id/{id}"&gt;Edit&lt;/a&gt;</template>
             </link> <!-- Column in database -->
             <sortable>0</sortable> <!-- Is column sortable? -->
             <searchable>0</searchable> <!-- Is column globally searchable? -->
             <sClass>read_only</sClass> <!-- Class to give to each cell in this column. -->
-        </columns>      
+            <sWidth>1%</sWidth>
+        </columns>
 
  	 	<columns>
     		<label>Active?</label> <!-- Displayed to users -->
@@ -118,7 +155,7 @@
     		<sortable>1</sortable> <!-- Is column sortable? -->
     		<searchable>0</searchable> <!-- Is column globally searchable? -->
     		<naturalSort>0</naturalSort> <!-- Fix for sort fields with #s -->
-			
+
     		<!-- These settings are used by jquery.dataTables.editable.js -->
     		<aoColumns>
 				<type>select</type> <!-- Class to give to each cell in this column. -->
@@ -133,7 +170,7 @@
     			<enable>1</enable>
     			<type>select</type>
     			<name>active_search</name>
-    			
+
     			<!-- List static values for select here -->
     			<values>
     				<label>Yes</label>
@@ -147,10 +184,11 @@
     			<class>search_init</class> <!-- needed for js hooks -->
     			<method>single</method> <!-- control PHP search method, like or single -->
    			</columnSearch>
-   			
-   			<sClass>center</sClass>
+
+   			<sClass>center nowrap</sClass>
+            <sWidth>1%</sWidth>
     	</columns>
-    	
+
   		<columns isSortDefault="true">
     		<label>Email</label> <!-- Displayed to users -->
     		<!-- Column in database -->
@@ -176,7 +214,8 @@
     			<method>like</method> <!-- control PHP search method, like or single -->
    			</columnSearch>
 
-   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+   			<sClass>nowrap</sClass> <!-- Class to give to each cell in this column. -->
+            <sWidth>1%</sWidth>
 
     		<!-- Zend Validators used to validate response -->
     		<zendValidate>
@@ -221,7 +260,8 @@
     			<method>like</method> <!-- control PHP search method, like or single -->
    			</columnSearch>
 
-   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+   			<sClass>nowrap</sClass> <!-- Class to give to each cell in this column. -->
+            <sWidth>1%</sWidth>
     	</columns>
 
   	  	<columns>
@@ -249,9 +289,10 @@
     			<method>like</method> <!-- control PHP search method, like or single -->
    			</columnSearch>
 
-   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+   			<sClass>nowrap</sClass> <!-- Class to give to each cell in this column. -->
+            <sWidth>1%</sWidth>
     	</columns>
-    	
+
   	  	<columns>
   			<label>Address</label> <!-- Displayed to users -->
     		<!-- Column in database -->
@@ -277,7 +318,8 @@
     			<method>like</method> <!-- control PHP search method, like or single -->
    			</columnSearch>
 
-   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+   			<sClass>nowrap</sClass> <!-- Class to give to each cell in this column. -->
+            <sWidth>1%</sWidth>
     	</columns>
 
   	  	<columns>
@@ -305,9 +347,10 @@
     			<method>like</method> <!-- control PHP search method, like or single -->
    			</columnSearch>
 
-   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+   			<sClass>nowrap</sClass> <!-- Class to give to each cell in this column. -->
+            <sWidth>1%</sWidth>
     	</columns>
-   
+
   	  	<columns>
   			<label>State</label> <!-- Displayed to users -->
     		<!-- Column in database -->
@@ -333,7 +376,8 @@
     			<method>like</method> <!-- control PHP search method, like or single -->
    			</columnSearch>
 
-   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+   			<sClass>nowrap</sClass> <!-- Class to give to each cell in this column. -->
+            <sWidth>1%</sWidth>
     	</columns>
 
   	  	<columns>
@@ -361,7 +405,8 @@
     			<method>like</method> <!-- control PHP search method, like or single -->
    			</columnSearch>
 
-   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+   			<sClass>nowrap</sClass> <!-- Class to give to each cell in this column. -->
+            <sWidth>1%</sWidth>
 
             <!-- Zend Filters used to filter response -->
             <zendFilter>
@@ -369,13 +414,13 @@
                 <!-- json encoded arguments for filter -->
                 <arguments></arguments>
             </zendFilter>
-            
+
             <!-- Zend Validators used to validate response -->
-<!--            <zendValidate>
+            <zendValidate>
                 <name>Zend_Validate_PostCode</name>
                 <arguments></arguments>
-            </zendValidate> -->
-            
+            </zendValidate>
+
             <!-- These settings are used by jquery.dataTables.editable.js -->
             <aoColumns>
                 <type>text</type> <!-- Class to give to each cell in this column. -->
@@ -387,7 +432,7 @@
                 <onblur>submit</onblur>
             </aoColumns>
         </columns>
-    	
+
   	  	<columns>
   			<label>Phone</label> <!-- Displayed to users -->
     		<!-- Column in database -->
@@ -413,7 +458,8 @@
     			<method>like</method> <!-- control PHP search method, like or single -->
    			</columnSearch>
 
-   			<sClass></sClass> <!-- Class to give to each cell in this column. -->
+   			<sClass>nowrap</sClass> <!-- Class to give to each cell in this column. -->
+            <sWidth>1%</sWidth>
 
             <!-- Zend Filters used to filter response -->
             <zendFilter>
@@ -426,7 +472,7 @@
                 <!-- json encoded arguments for filter -->
                 <arguments></arguments>
             </zendFilter>
-            
+
             <!-- Zend Validators used to validate response -->
             <zendValidate>
                 <name>App_Validate_Phone</name>
@@ -445,10 +491,10 @@
                 <onblur>submit</onblur>
             </aoColumns>
     	</columns>
-    	
+
     	<!-- Only tfoot works, thead is broken -->
     	<columnSearchPosition>tfoot</columnSearchPosition>
-    	
+
     	<!-- Special flash buttons for datatable -->
      	<buttons>pdf</buttons>
     	<buttons>csv</buttons>
@@ -457,14 +503,14 @@
 
 		<!-- used for html table element id -->
 		<tableId>users</tableId>
-		
+
 		<!-- Configure DataTables to use server-side processing. Note that the sAjaxSource parameter must also be given in order to give DataTables a source to obtain the required data for each draw. -->
 		<!-- true or false -->
 		<bServerSide>true</bServerSide>
 
     	<!-- jQuery Datatable setup -->
 		<config>
-			"bStateSave": true, //Enable or disable state saving. When enabled a cookie will be used to save table display information such as pagination information, display length, filtering and sorting. As such when the end user reloads the page the display display will match what thy had previously set up. 
+			"bStateSave": true, //Enable or disable state saving. When enabled a cookie will be used to save table display information such as pagination information, display length, filtering and sorting. As such when the end user reloads the page the display display will match what thy had previously set up.
 	    	// This initialization variable allows you to specify exactly where in the DOM you want DataTables to inject the various controls it adds to the page (for example you might want the pagination controls at the top of the table). DIV elements (with or without a custom class) can also be added to aid styling. The follow syntax is used:
 			//	The following options are allowed:
 			//	'l' - Length changing
@@ -482,8 +528,8 @@
 			//	'&lt;"#id" and '&gt;' - div with an ID
 			//	Examples:
 			//	'&lt;"wrapper"flipt>', '&lt;lf&lt;t&gt;ip&gt;'
-			"sDom": '&lt;"H"lfr&gt;t&lt;"F"pTi&gt;',
-			
+            "sDom": '&lt;"H"lfr&gt;t&lt;"F"piT&gt;',
+
 			// This parameter allows you to readily specify the entries in the length drop down menu that DataTables shows when pagination is enabled. It can be either a 1D array of options which will be used for both the displayed option and the value, or a 2D array which will use the array in the first position as the value, and the array in the second position as the displayed options (useful for language strings such as 'All').
 			"aLengthMenu": [
 				[25, 50, 100, -1],
@@ -492,41 +538,77 @@
 			"oLanguage": {
 				"sSearch": 'Search all columns:'
 			},
-			
-			//Number of rows to display on a single page when using pagination. If feature enabled (bLengthChange) then the end user will be able to over-ride this to a custom setting using a pop-up menu. 
+
+			//Number of rows to display on a single page when using pagination. If feature enabled (bLengthChange) then the end user will be able to over-ride this to a custom setting using a pop-up menu.
 			"iDisplayLength": 25,
-			
-			// Enable or disable the display of a 'processing' indicator when the table is being processed (e.g. a sort). This is particularly useful for tables with large amounts of data where it can take a noticeable amount of time to sort the entries. 
+
+			// Enable or disable the display of a 'processing' indicator when the table is being processed (e.g. a sort). This is particularly useful for tables with large amounts of data where it can take a noticeable amount of time to sort the entries.
 			// true or false
 			"bProcessing": true,
-			
+
+            "bAutoWidth": false,
+
 			// Enable jQuery UI ThemeRoller support (required as ThemeRoller requires some slightly different and additional mark-up from what DataTables has traditionally used).
 			// true or false
 			"bJQueryUI": true,
 
 			// DataTables features two different built-in pagination interaction methods ('two_button' or 'full_numbers') which present different page controls to the end user.
 			"sPaginationType": 'full_numbers',
-			
+
 			// multi or single , currently multi does not work
-			"sRowSelect": 'single'
+			"sRowSelect": 'single',
+            // allows you to push other fields from page when getting data for table
+            "fnServerParams":function (aoData) {
+                //aoData.push({"name":"var", "value": value});
+            },
+            // gets called after ajax load
+            "fnDrawCallback": function( oSettings ) {
+                //check to see if search has changed, if so adjust window view
+                var searchPresent = false;
+                $('#'+dt_tableId+' '+dt_columnSearchPosition+' :input').each(function (i) {
+                    var cols = oSettings.aoPreSearchCols;
+                    if (typeof cols[i].sSearch != 'undefined' &amp;&amp; cols[i].sSearch != '') {
+                        searchPresent = true;
+                        return true;
+                    }
+                });
+                if (searchPresent) {
+                    var offset = $('#'+dt_tableId+' '+dt_columnSearchPosition+' :input').offset();
+                    $("html,body").animate({
+                        scrollTop: offset.top-200
+                    });
+                }
+            },
+            // gets called after datatables gets initialized
+            "fnInitComplete":function (oSettings, json) {
+                $('#'+dt_tableId+' '+dt_columnSearchPosition+' :input').each(function (i) {
+                    var cols = oSettings.aoPreSearchCols;
+                    if (typeof cols[i].sSearch != 'undefined' &amp;&amp; cols[i].sSearch != '') {
+                        $(this).val(cols[i].sSearch);
+                        $(this).removeClass('search_init');
+                    }
+                });
+            }
+            // turn off striping
+            //,"asStripeClasses": []
 		</config>
-		
+
 		<!-- Set the saved document's title / file name. In the case of a PDF file, this title
 			 is displayed in the document at the top (above the sMessage text, if given).
 			 If given as an empty string, TableTools will use the TITLE tag from the HTML document. -->
 		<reportTitle>User List</reportTitle>
-		
+
 		<!-- This parameter defines the name of the file that is to be saved. The special character
 			 "*" will be replaced by the HTML document's "TITLE" tag if it is present.
 			 Otherwise you can use this parameter to define the file name to be used. -->
 		<reportFilename>user_list</reportFilename>
-		
+
 		<!-- A free text input which can be used to add a custom description / summary to a PDF export. -->
 		<pdfMessage>User List</pdfMessage>
-		
+
 		<!-- Set the paper orientation for PDF output. -->
 		<pdfOrientation>landscape</pdfOrientation>
-		
+
 		<!-- Set the size of the paper used in the PDF saved file. -->
 		<pdfSize>letter</pdfSize>
     </production>

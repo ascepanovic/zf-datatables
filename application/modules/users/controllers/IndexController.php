@@ -10,7 +10,7 @@ class Users_IndexController extends App_Controller_Datatable {
      */
     protected $_eventLog = null;
 
-    
+
     function preDispatch ()
     {
         // your predispatch
@@ -27,7 +27,7 @@ class Users_IndexController extends App_Controller_Datatable {
     public function datasourceAction ()
     {
         $where = null;
-        
+
         parent::datasourceAction($where);
     }
 
@@ -35,7 +35,7 @@ class Users_IndexController extends App_Controller_Datatable {
         $result = parent::addAction();
 
         // do something extra
-        
+
         if ($result === false || $result > 0) {
             $this->_goback();
         }
@@ -55,8 +55,42 @@ class Users_IndexController extends App_Controller_Datatable {
 
     public function editAction() {
         $result = parent::editAction();
+        if (!is_null($result)) {
+            $this->_goback();
+        }
 
         // do something extra
+    }
+
+    /**
+     * Process form data before saving it to the database.
+     *
+     * @param array $row
+     * @param object $form
+     * @return array
+     */
+    public function processSaveForm($data,$form) {
+        return $data;
+    }
+
+    /**
+     * Process data before displaying form to user.
+     * @param $row
+     * @param $form
+     * @return mixed
+     */
+    public function processDisplayAddForm($row,$form) {
+        return $row;
+    }
+
+    /**
+     * Process data before displaying form to user.
+     * @param $row
+     * @param $form
+     * @return mixed
+     */
+    public function processDisplayEditForm($row,$form) {
+        return $row;
     }
 
     /**

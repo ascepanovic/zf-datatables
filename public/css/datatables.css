@@ -1,0 +1,62 @@
+body {
+    /*font-size: 62.5%;*/
+}
+table.dataTable td.dataTables_empty {
+    text-align: left;
+}
+.ui-button-text {
+    font-size: .80em;
+}
+.clearFilters button, .delete_row {
+    font-size: .87em;
+}
+.dataTables_info {
+    float:left;
+    margin-right:1em;
+    clear:none;
+}
+.DTTT_button_print span, .DTTT_button_copy span, .DTTT_button_csv span, .DTTT_button_pdf span {
+    padding: .5em;
+}
+.search_init {
+    color:#a9a9a9;
+}
+.row_selected td {
+    background-color: #B0BED9 !important;
+}
+table.display {
+    border-collapse:collapse;
+    width: 100%;
+}
+table.display input {
+    width:85px;
+}
+.right {
+    text-align: right;
+}
+.nowrap {
+    white-space: nowrap;
+}
+
+/**
+ * Below is only for jGrowl messages
+ */
+div.jGrowl div.jGrowl-notification, div.jGrowl div.jGrowl-closer {
+    font-family:            arial;
+    font-size: 1.25em;
+    background-color:       #000;
+    color:                  #fff;
+    opacity:                .85;
+    filter:                 alpha(opacity = 85);
+    zoom:                   1;
+    width:                  100%;
+}
+div.jGrowl div.jGrowl-closer {
+    color:                  #000;
+}
+div.jGrowl div.errorMessage {
+    background-color:       red !important;
+}
+div.jGrowl div.successMessage {
+    background-color:       green !important;
+}

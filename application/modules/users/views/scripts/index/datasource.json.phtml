@@ -14,18 +14,111 @@ while ($row = $this->stmt->fetch()) {
      */
     $z=0;
     foreach ($this->datatableOptions['columns'] as $key=>$column) {
-        if (isset($column['link']) && $column['link']['template'] != "" && isset($column['link']['id'])) {
+        if (!isset($zfViewHelper[$key])) {
+            if (isset($column['zfViewHelper']) && !empty($column['zfViewHelper'])) {
+                $zfViewHelperExists[$key] = $column['zfViewHelper'];
+            } else {
+                $zfViewHelperExists[$key] = false;
+            }
+        }
+        if (isset($column['link']) && $column['link']['href']['url'] != "" && (isset($column['link']['id']) || isset($column['link']['atoms']))) {
             // find the index # of the column we need for this link
-            foreach ($this->datatableOptions['columns'] as $key2=>$column2) {
-                if ($column2['data']['read']['column'] == $column['link']['id']) {
-                    $columnNumber = $key2;
-                    break;
+            if (isset($column['link']['id'])) {
+                foreach ($this->datatableOptions['columns'] as $key2=>$column2) {
+                    if ($this->columnMetadata->readRaw[$key2] == $column['link']['id']) {
+                        $columnNumber = $key2;
+                        break;
+                    }
+                }
+                $atoms = array('id'=>$row[$columnNumber]);
+            } else {
+                $atoms = array();
+                foreach ($column['link']['atoms'] as $key2=>$item2) {
+                    $columnNumber = false;
+                    $hit = false;
+                    foreach ($this->columnMetadata->readRaw as $key3=>$item3) {
+                        if ($item3 == $item2) {
+                            $columnNumber = $key3;
+                            $hit = true;
+                            break;
+                        }
+                    }
+                    if ($hit) {
+                        $atoms[$key2]=$row[$columnNumber];
+                    }
                 }
             }
 
-            $out[$z] = $this->DatatablesLink($column['link']['template'],$row[$columnNumber]);
+            $url = $this->DatatablesLink($column['link']['href']['url'],$atoms);
+            $target = null;
+            if ($column['link']['href']['target']) {
+                $target = ' target='.$column['link']['href']['target'];
+            }
+            if ($column['link']['href']['text'] != "") {
+                $href = '<a href="'.$url.'"'.$target.'>'.$this->escape($column['link']['href']['text']).'</a>';
+            } else {
+                $href = '<a href="'.$url.'"'.$target.'>'.$this->escape($row[$key]).'</a>';
+            }
+            if ($zfViewHelperExists[$key]) {
+                $href = $this->$zfViewHelperExists[$key]($href,$row,$atoms);
+            }
+            $out[$z] = $href;
+        } else if (isset($column['link']) && $column['link']['template'] != "" && (isset($column['link']['id']) || isset($column['link']['atoms']))) {
+            // find the index # of the column we need for this link
+            if (isset($column['link']['id'])) {
+                foreach ($this->datatableOptions['columns'] as $key2=>$column2) {
+                    if ($this->columnMetadata->readRaw[$key2] == $column['link']['id']) {
+                        $columnNumber = $key2;
+                        break;
+                    }
+                }
+                $atoms = array('id'=>$row[$columnNumber]);
+            } else {
+                $atoms = array();
+                foreach ($column['link']['atoms'] as $key2=>$item2) {
+                    $columnNumber = false;
+                    $hit = false;
+                    foreach ($this->columnMetadata->readRaw as $key3=>$item3) {
+                        if ($item3 == $item2) {
+                            $columnNumber = $key3;
+                            $hit = true;
+                            break;
+                        }
+                    }
+                    if ($hit) {
+                        $atoms[$key2]=$row[$columnNumber];
+                    }
+                }
+            }
+            $tmp = $this->DatatablesLink($column['link']['template'],$atoms);
+            if ($zfViewHelperExists[$key]) {
+                $tmp = $this->$zfViewHelperExists[$key]($tmp,$row,$atoms);
+            }
+            $out[$z] = $tmp;
         } else {
-            $out[$z] = $row[$key];
+            if ($zfViewHelperExists[$key]) {
+                if (is_array($column['link']['atoms']) && count($column['link']['atoms']) > 0) {
+                    $atoms = array();
+                    foreach ($column['link']['atoms'] as $key2=>$item2) {
+                        $columnNumber = false;
+                        $hit = false;
+                        foreach ($this->columnMetadata->readRaw as $key3=>$item3) {
+                            if ($item3 == $item2) {
+                                $columnNumber = $key3;
+                                $hit = true;
+                                break;
+                            }
+                        }
+                        if ($hit) {
+                            $atoms[$key2]=$row[$columnNumber];
+                        }
+                    }
+                }
+
+                $out[$z] = $this->$zfViewHelperExists[$key]($row[$key],$row,$atoms);
+            } else {
+                $out[$z] = $this->escape($row[$key]);
+            }
         }
 
         $z++;
